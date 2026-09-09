@@ -4,7 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c5b8ad1c-4234-421c-bc86-2e6387d4023e" name="Changes" comment="" />
+    <list default="true" id="a6634008-436e-49d8-86d5-38d05a77ae07" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_17_0_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_win_17_0_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_17_0_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_win_17_0_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_17_0_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_win_17_0_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/vallegrande/edu/pe/demo/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/vallegrande/edu/pe/demo/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/vallegrande/edu/pe/demo/controller/MainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/vallegrande/edu/pe/demo/controller/MainController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/vallegrande/edu/pe/demo/view/MainView.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/vallegrande/edu/pe/demo/view/MainView.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,7 +36,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -27,21 +45,24 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 2
-}</component>
-  <component name="ProjectId" id="3J5pP7VbDuQ9qT29QgOUT0l8Zvi" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="3J67rz9gV31KR4J8jUwIyLwRgpa" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Main.executor": "Run",
-    "Maven.mi-sistema [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "Application.Launcher.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "git-widget-placeholder": "main",
@@ -63,11 +84,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c5b8ad1c-4234-421c-bc86-2e6387d4023e" name="Changes" comment="" />
-      <created>1788960757235</created>
+      <changelist id="a6634008-436e-49d8-86d5-38d05a77ae07" name="Changes" comment="" />
+      <created>1788969867285</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1788960757235</updated>
+      <updated>1788969867285</updated>
     </task>
     <servers />
   </component>
