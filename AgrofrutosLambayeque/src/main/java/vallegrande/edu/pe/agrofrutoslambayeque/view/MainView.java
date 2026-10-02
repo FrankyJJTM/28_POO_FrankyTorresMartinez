@@ -7,7 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.List;
@@ -21,6 +23,14 @@ public class MainView extends Application {
     private Button btnContactos;
     private VBox contenedorCards;
     private BorderPane root;
+
+    // Campos de texto para el formulario
+    private TextField txtNombre;
+    private TextField txtApellido;
+    private TextField txtTelefono;
+    private TextField txtCorreo;
+    private TextField txtMensaje;
+    private Button btnGuardarContacto;
 
     @Override
     public void start(Stage stage) {
@@ -38,16 +48,35 @@ public class MainView extends Application {
         menuLateral.getChildren().addAll(btnInicio, btnContactos);
         root.setLeft(menuLateral);
 
-        // 2. Contenedor de Tarjetas
+        // 2. Contenedor Principal
         contenedorCards = new VBox(15);
         contenedorCards.setPadding(new Insets(25));
+
+        // Inicializar componentes del formulario
+        txtNombre = new TextField();
+        txtNombre.setPromptText("Nombre");
+
+        txtApellido = new TextField();
+        txtApellido.setPromptText("Apellido");
+
+        txtTelefono = new TextField();
+        txtTelefono.setPromptText("Teléfono");
+
+        txtCorreo = new TextField();
+        txtCorreo.setPromptText("Correo electrónico");
+
+        txtMensaje = new TextField();
+        txtMensaje.setPromptText("Mensaje");
+
+        btnGuardarContacto = new Button("Guardar Contacto");
+        btnGuardarContacto.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 15 8 15; -fx-background-radius: 5;");
 
         mostrarInicio();
 
         // 3. Controlador
         new MainController(this);
 
-        Scene scene = new Scene(root, 900, 600);
+        Scene scene = new Scene(root, 950, 650);
         stage.setTitle("AGROFRUTOS LAMBAYEQUE");
         stage.setScene(scene);
         stage.show();
@@ -80,8 +109,13 @@ public class MainView extends Application {
 
         Label titulo = new Label("Contactos Agrofrutos");
         titulo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        contenedorCards.getChildren().add(titulo);
 
+        // Formulario de ingreso manual
+        VBox formBox = crearFormulario();
+
+        contenedorCards.getChildren().addAll(titulo, formBox);
+
+        // Renderizar la lista de tarjetas existentes
         for (Contacto c : lista) {
             VBox card = new VBox(6);
             card.setPadding(new Insets(15));
@@ -107,6 +141,53 @@ public class MainView extends Application {
         root.setCenter(scrollPane);
     }
 
+    private VBox crearFormulario() {
+        VBox formContainer = new VBox(10);
+        formContainer.setPadding(new Insets(15));
+        formContainer.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;");
+
+        Label lblForm = new Label("Agregar Nuevo Contacto");
+        lblForm.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        grid.add(new Label("Nombre:"), 0, 0);
+        grid.add(txtNombre, 1, 0);
+
+        grid.add(new Label("Apellido:"), 2, 0);
+        grid.add(txtApellido, 3, 0);
+
+        grid.add(new Label("Teléfono:"), 0, 1);
+        grid.add(txtTelefono, 1, 1);
+
+        grid.add(new Label("Correo:"), 2, 1);
+        grid.add(txtCorreo, 3, 1);
+
+        grid.add(new Label("Mensaje:"), 0, 2);
+        grid.add(txtMensaje, 1, 2, 3, 1);
+
+        formContainer.getChildren().addAll(lblForm, grid, btnGuardarContacto);
+        return formContainer;
+    }
+
+    public void limpiarFormulario() {
+        txtNombre.clear();
+        txtApellido.clear();
+        txtTelefono.clear();
+        txtCorreo.clear();
+        txtMensaje.clear();
+    }
+
+    // Getters
     public Button getBtnInicio() { return btnInicio; }
     public Button getBtnContactos() { return btnContactos; }
+    public Button getBtnGuardarContacto() { return btnGuardarContacto; }
+
+    public String getTxtNombre() { return txtNombre.getText(); }
+    public String getTxtApellido() { return txtApellido.getText(); }
+    public String getTxtTelefono() { return txtTelefono.getText(); }
+    public String getTxtCorreo() { return txtCorreo.getText(); }
+    public String getTxtMensaje() { return txtMensaje.getText(); }
 }

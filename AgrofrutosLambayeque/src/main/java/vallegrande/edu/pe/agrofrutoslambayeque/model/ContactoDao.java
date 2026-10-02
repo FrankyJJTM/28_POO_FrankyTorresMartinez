@@ -1,6 +1,7 @@
 package vallegrande.edu.pe.agrofrutoslambayeque.model;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -31,5 +32,26 @@ public class ContactoDao {
             e.printStackTrace();
         }
         return lista;
+    }
+
+    public boolean agregarContacto(Contacto contacto) {
+        String sql = "INSERT INTO contactos (nombre, apellido, telefono, correo, mensaje) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, contacto.getNombre());
+            pstmt.setString(2, contacto.getApellido());
+            pstmt.setString(3, contacto.getTelefono());
+            pstmt.setString(4, contacto.getCorreo());
+            pstmt.setString(5, contacto.getMensaje());
+
+            int filasAfectadas = pstmt.executeUpdate();
+            return filasAfectadas > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
