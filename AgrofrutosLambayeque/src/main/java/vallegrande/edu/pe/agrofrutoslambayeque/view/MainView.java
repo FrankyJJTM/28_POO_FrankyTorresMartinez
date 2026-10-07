@@ -10,6 +10,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.List;
@@ -24,19 +25,25 @@ public class MainView extends Application {
     private VBox contenedorCards;
     private BorderPane root;
 
-    // Campos de texto para el formulario
     private TextField txtNombre;
     private TextField txtApellido;
     private TextField txtTelefono;
     private TextField txtCorreo;
     private TextField txtMensaje;
     private Button btnGuardarContacto;
+    private Button btnCancelarEdicion;
+    private Label lblTituloForm;
+
+    private TextField txtBuscar;
+    private Button btnBuscar;
+    private Button btnLimpiarBusqueda;
+
+    private Integer idContactoSeleccionado = null;
 
     @Override
     public void start(Stage stage) {
         root = new BorderPane();
 
-        // 1. Barra Lateral (Menú)
         VBox menuLateral = new VBox(15);
         menuLateral.setPadding(new Insets(20));
         menuLateral.setPrefWidth(220);
@@ -48,11 +55,9 @@ public class MainView extends Application {
         menuLateral.getChildren().addAll(btnInicio, btnContactos);
         root.setLeft(menuLateral);
 
-        // 2. Contenedor Principal
         contenedorCards = new VBox(15);
         contenedorCards.setPadding(new Insets(25));
 
-        // Inicializar componentes del formulario
         txtNombre = new TextField();
         txtNombre.setPromptText("Nombre");
 
@@ -71,9 +76,25 @@ public class MainView extends Application {
         btnGuardarContacto = new Button("Guardar Contacto");
         btnGuardarContacto.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 15 8 15; -fx-background-radius: 5;");
 
+        btnCancelarEdicion = new Button("Cancelar");
+        btnCancelarEdicion.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 15 8 15; -fx-background-radius: 5;");
+        btnCancelarEdicion.setVisible(false);
+
+        lblTituloForm = new Label("Agregar Nuevo Contacto");
+        lblTituloForm.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        txtBuscar = new TextField();
+        txtBuscar.setPromptText("Buscar por nombre, apellido o correo...");
+        txtBuscar.setPrefWidth(300);
+
+        btnBuscar = new Button("Buscar");
+        btnBuscar.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 12 6 12; -fx-background-radius: 5;");
+
+        btnLimpiarBusqueda = new Button("Limpiar");
+        btnLimpiarBusqueda.setStyle("-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 12 6 12; -fx-background-radius: 5;");
+
         mostrarInicio();
 
-        // 3. Controlador
         new MainController(this);
 
         Scene scene = new Scene(root, 950, 650);
@@ -110,12 +131,14 @@ public class MainView extends Application {
         Label titulo = new Label("Contactos Agrofrutos");
         titulo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        // Formulario de ingreso manual
+        HBox searchBox = new HBox(10);
+        searchBox.setAlignment(Pos.CENTER_LEFT);
+        searchBox.getChildren().addAll(txtBuscar, btnBuscar, btnLimpiarBusqueda);
+
         VBox formBox = crearFormulario();
 
-        contenedorCards.getChildren().addAll(titulo, formBox);
+        contenedorCards.getChildren().addAll(titulo, searchBox, formBox);
 
-        // Renderizar la lista de tarjetas existentes
         for (Contacto c : lista) {
             VBox card = new VBox(6);
             card.setPadding(new Insets(15));
@@ -130,7 +153,19 @@ public class MainView extends Application {
             Label msg = new Label("Mensaje: " + c.getMensaje());
             msg.setStyle("-fx-font-size: 13px; -fx-text-fill: #444444;");
 
-            card.getChildren().addAll(nombre, datos, msg);
+            // Botones de acción para cada registro (UPDATE / DELETE)
+            Button btnEditar = new Button("Editar");
+            btnEditar.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 4 10 4 10; -fx-background-radius: 4;");
+            btnEditar.setOnAction(e -> cargarContactoEnFormulario(c));
+
+            Button btnEliminar = new Button("Eliminar");
+            btnEliminar.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 4 10 4 10; -fx-background-radius: 4;");
+            btnEliminar.setUserData(c.getId()); // Guardamos el ID en el botón para el controlador
+
+            HBox accionesBox = new HBox(10);
+            accionesBox.getChildren().addAll(btnEditar, btnEliminar);
+
+            card.getChildren().addAll(nombre, datos, msg, accionesBox);
             contenedorCards.getChildren().add(card);
         }
 
@@ -145,9 +180,6 @@ public class MainView extends Application {
         VBox formContainer = new VBox(10);
         formContainer.setPadding(new Insets(15));
         formContainer.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;");
-
-        Label lblForm = new Label("Agregar Nuevo Contacto");
-        lblForm.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -168,26 +200,53 @@ public class MainView extends Application {
         grid.add(new Label("Mensaje:"), 0, 2);
         grid.add(txtMensaje, 1, 2, 3, 1);
 
-        formContainer.getChildren().addAll(lblForm, grid, btnGuardarContacto);
+        HBox btnBox = new HBox(10);
+        btnBox.getChildren().addAll(btnGuardarContacto, btnCancelarEdicion);
+
+        formContainer.getChildren().addAll(lblTituloForm, grid, btnBox);
         return formContainer;
     }
 
+    public void cargarContactoEnFormulario(Contacto c) {
+        this.idContactoSeleccionado = c.getId();
+        txtNombre.setText(c.getNombre());
+        txtApellido.setText(c.getApellido());
+        txtTelefono.setText(c.getTelefono());
+        txtCorreo.setText(c.getCorreo());
+        txtMensaje.setText(c.getMensaje());
+
+        lblTituloForm.setText("Editar Contacto (ID: " + c.getId() + ")");
+        btnGuardarContacto.setText("Actualizar Contacto");
+        btnCancelarEdicion.setVisible(true);
+    }
+
     public void limpiarFormulario() {
+        this.idContactoSeleccionado = null;
         txtNombre.clear();
         txtApellido.clear();
         txtTelefono.clear();
         txtCorreo.clear();
         txtMensaje.clear();
+
+        lblTituloForm.setText("Agregar Nuevo Contacto");
+        btnGuardarContacto.setText("Guardar Contacto");
+        btnCancelarEdicion.setVisible(false);
     }
 
-    // Getters
     public Button getBtnInicio() { return btnInicio; }
     public Button getBtnContactos() { return btnContactos; }
     public Button getBtnGuardarContacto() { return btnGuardarContacto; }
+    public Button getBtnCancelarEdicion() { return btnCancelarEdicion; }
+    public Button getBtnBuscar() { return btnBuscar; }
+    public Button getBtnLimpiarBusqueda() { return btnLimpiarBusqueda; }
 
     public String getTxtNombre() { return txtNombre.getText(); }
     public String getTxtApellido() { return txtApellido.getText(); }
     public String getTxtTelefono() { return txtTelefono.getText(); }
     public String getTxtCorreo() { return txtCorreo.getText(); }
     public String getTxtMensaje() { return txtMensaje.getText(); }
+    public String getTxtBuscar() { return txtBuscar.getText(); }
+
+    public Integer getIdContactoSeleccionado() { return idContactoSeleccionado; }
+    public VBox getContenedorCards() { return contenedorCards; }
 }

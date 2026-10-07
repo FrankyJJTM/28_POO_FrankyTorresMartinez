@@ -3,7 +3,6 @@ module vallegrande.edu.pe.agrofrutoslambayeque {
     requires javafx.fxml;
     requires java.sql;
 
-    // Conceder acceso a JavaFX para instanciar MainView y acceder a sus recursos
     opens vallegrande.edu.pe.agrofrutoslambayeque to javafx.graphics, javafx.fxml;
     opens vallegrande.edu.pe.agrofrutoslambayeque.view to javafx.graphics, javafx.fxml;
     opens vallegrande.edu.pe.agrofrutoslambayeque.controller to javafx.fxml;

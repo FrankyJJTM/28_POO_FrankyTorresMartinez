@@ -1,9 +1,15 @@
 package vallegrande.edu.pe.agrofrutoslambayeque.controller;
 
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.VBox;
 import vallegrande.edu.pe.agrofrutoslambayeque.model.Contacto;
 import vallegrande.edu.pe.agrofrutoslambayeque.model.ContactoDao;
 import vallegrande.edu.pe.agrofrutoslambayeque.view.MainView;
+
+import java.util.Optional;
 
 public class MainController {
 
@@ -18,12 +24,23 @@ public class MainController {
 
     private void configurarEventos() {
         view.getBtnInicio().setOnAction(e -> view.mostrarInicio());
-        view.getBtnContactos().setOnAction(e -> view.mostrarContactos(dao.listarContactos()));
+        view.getBtnContactos().setOnAction(e -> cargarListaContactos());
 
-        view.getBtnGuardarContacto().setOnAction(e -> guardarContacto());
+        view.getBtnGuardarContacto().setOnAction(e -> guardarOActualizarContacto());
+        view.getBtnCancelarEdicion().setOnAction(e -> view.limpiarFormulario());
+
+        view.getBtnBuscar().setOnAction(e -> buscarContactos());
+        view.getBtnLimpiarBusqueda().setOnAction(e -> {
+            cargarListaContactos();
+        });
     }
 
-    private void guardarContacto() {
+    private void cargarListaContactos() {
+        view.mostrarContactos(dao.listarContactos());
+        asignarEventosEliminar();
+    }
+
+    private void guardarOActualizarContacto() {
         String nombre = view.getTxtNombre().trim();
         String apellido = view.getTxtApellido().trim();
         String telefono = view.getTxtTelefono().trim();
@@ -35,21 +52,79 @@ public class MainController {
             return;
         }
 
-        Contacto nuevo = new Contacto();
-        nuevo.setNombre(nombre);
-        nuevo.setApellido(apellido);
-        nuevo.setTelefono(telefono);
-        nuevo.setCorreo(correo);
-        nuevo.setMensaje(mensaje);
+        Contacto contacto = new Contacto();
+        contacto.setNombre(nombre);
+        contacto.setApellido(apellido);
+        contacto.setTelefono(telefono);
+        contacto.setCorreo(correo);
+        contacto.setMensaje(mensaje);
 
-        boolean exito = dao.agregarContacto(nuevo);
+        boolean exito;
+        Integer idSeleccionado = view.getIdContactoSeleccionado();
+
+        if (idSeleccionado == null) {
+            exito = dao.agregarContacto(contacto);
+        } else {
+            contacto.setId(idSeleccionado);
+            exito = dao.actualizarContacto(contacto);
+        }
 
         if (exito) {
-            mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "El contacto se ha registrado correctamente.");
+            String msg = (idSeleccionado == null) ? "El contacto se ha registrado correctamente." : "El contacto se ha actualizado correctamente.";
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", msg);
             view.limpiarFormulario();
-            view.mostrarContactos(dao.listarContactos());
+            cargarListaContactos();
         } else {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo guardar el contacto en la base de datos.");
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo procesar la solicitud en la base de datos.");
+        }
+    }
+
+    private void buscarContactos() {
+        String criterio = view.getTxtBuscar().trim();
+        if (criterio.isEmpty()) {
+            cargarListaContactos();
+            return;
+        }
+        view.mostrarContactos(dao.buscarContactos(criterio));
+        asignarEventosEliminar();
+    }
+
+    private void asignarEventosEliminar() {
+        for (Node node : view.getContenedorCards().getChildren()) {
+            if (node instanceof VBox) {
+                VBox card = (VBox) node;
+                Node ultimoNodo = card.getChildren().get(card.getChildren().size() - 1);
+                if (ultimoNodo instanceof javafx.scene.layout.HBox) {
+                    javafx.scene.layout.HBox accionesBox = (javafx.scene.layout.HBox) ultimoNodo;
+                    for (Node btnNode : accionesBox.getChildren()) {
+                        if (btnNode instanceof Button) {
+                            Button btn = (Button) btnNode;
+                            if ("Eliminar".equals(btn.getText()) && btn.getUserData() != null) {
+                                int id = (int) btn.getUserData();
+                                btn.setOnAction(e -> eliminarContacto(id));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void eliminarContacto(int id) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar eliminación");
+        confirm.setHeaderText(null);
+        confirm.setContentText("¿Estás seguro de que deseas eliminar este contacto?");
+
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            boolean exito = dao.eliminarContacto(id);
+            if (exito) {
+                mostrarAlerta(Alert.AlertType.INFORMATION, "Eliminado", "El contacto fue eliminado con éxito.");
+                cargarListaContactos();
+            } else {
+                mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo eliminar el contacto.");
+            }
         }
     }
 
